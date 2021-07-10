@@ -14,6 +14,7 @@ public class HttpServerFactory {
 	protected static HttpServer createHttpServer() throws IOException {
 		ResourceConfig resourceConfig = new ResourceConfig()
 				.packages("com.example.cors.resource")
+				.packages("com.example.cors.filter")
 				.register(JacksonFeature.class);
 
 		System.out.println("Starting grizzly2...");
