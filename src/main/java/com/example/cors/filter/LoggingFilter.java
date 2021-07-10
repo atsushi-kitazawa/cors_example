@@ -2,6 +2,7 @@ package com.example.cors.filter;
 
 import java.io.IOException;
 
+import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -10,6 +11,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 @Provider
+@Priority(1000)
 public class LoggingFilter
 		implements ContainerRequestFilter, ContainerResponseFilter {
 
