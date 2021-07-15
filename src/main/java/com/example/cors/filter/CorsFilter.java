@@ -21,6 +21,7 @@ public class CorsFilter
 	private static final String OPTION_METHOD = "OPTIONS";
 
 	private static final String ORIGIN_HEADER = "Origin";
+	private static final String VARY_HEADER = "Vary";
 	private static final String ACCESS_CONTROL_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
 	private static final String ACCESS_CONTROL_ALLOW_METHOD_HEADER = "Access-Control-Allow-Method";
 	private static final String ACCESS_CONTROL_ALLOW_HEADERS_HEADER = "Access-Control-Allow-Headers";
@@ -42,7 +43,7 @@ public class CorsFilter
 
 			Response response = Response.status(Status.NO_CONTENT)
 					.header(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER,
-							reqHeaders.get(ORIGIN_HEADER))
+							requestContext.getHeaderString(ORIGIN_HEADER))
 					.header(ACCESS_CONTROL_ALLOW_METHOD_HEADER, "POST")
 					.header(ACCESS_CONTROL_ALLOW_HEADERS_HEADER, "X-PINGOTHER")
 					.build();
@@ -54,11 +55,14 @@ public class CorsFilter
 	public void filter(ContainerRequestContext requestContext,
 			ContainerResponseContext responseContext) throws IOException {
 
-		MultivaluedMap<String, String> reqHeaders = requestContext.getHeaders();
-		if (reqHeaders.keySet().contains(ORIGIN_HEADER)) {
-			responseContext.getHeaders().add(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER,
-					"*");
+		if (requestContext.getHeaderString(ORIGIN_HEADER) == null
+				|| requestContext.getMethod().equalsIgnoreCase(OPTION_METHOD)) {
+			return;
 		}
+
+		responseContext.getHeaders().add(VARY_HEADER, ORIGIN_HEADER);
+		responseContext.getHeaders().add(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER,
+				"*");
 
 	}
 }
